@@ -8,18 +8,6 @@
                :sort-desc.sync="sortDesc"
                :no-local-sorting="true"
                sort-icon-left>
-        <template #cell(latest_status)="data">
-          {{ getPrettyStatus(data.value) }}
-        </template>
-        <template #cell(appointment_date)="data">
-          {{ getPrettyDate(data.value) }}
-        </template>
-        <template #cell(date_created)="data">
-          {{ getPrettyDate(data.value) }}
-        </template>
-        <template #cell(date_modified)="data">
-          {{ getPrettyDate(data.value) }}
-        </template>
       </b-table>
     </div>
   </div>
@@ -49,10 +37,26 @@ export default {
       sortDesc: true,
       fields: [
         {key: 'customer_name', sortable: false},
-        {key: 'appointment_date', sortable: true},
-        {key: 'date_created', sortable: false},
-        {key: 'date_modified', sortable: true},
-        {key: 'latest_status', sortable: false}
+        {
+          key: 'appointment_date', sortable: true, formatter: (value) => {
+            return this.getPrettyDate(value)
+          }
+        },
+        {
+          key: 'date_created', sortable: false, formatter: (value) => {
+            return this.getPrettyDate(value)
+          }
+        },
+        {
+          key: 'date_modified', sortable: true, formatter: (value) => {
+            return this.getPrettyDate(value)
+          }
+        },
+        {
+          key: 'latest_status', sortable: false, formatter: (value) => {
+            return this.getPrettyStatus(value)
+          }
+        }
       ]
     }
   },
@@ -66,8 +70,8 @@ export default {
       const prettyStatusMap = {
         'installation_request': 'Installation requested',
         'installation_in_progress': 'Installation in progress',
-        'installation_complete': 'Installation Complete',
-        'installation_rejected': 'Installation Rejected'
+        'installation_complete': 'Installation complete',
+        'installation_rejected': 'Installation rejected'
       };
       return prettyStatusMap[status];
     },
