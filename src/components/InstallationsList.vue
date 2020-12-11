@@ -8,16 +8,20 @@
                :sort-desc.sync="sortDesc"
                :no-local-sorting="true"
                sort-icon-left>
+        <template #cell(history)="data">
+          <b-button variant="outline-primary" @click="showHistory(data)">History</b-button>
+        </template>
       </b-table>
     </div>
   </div>
 </template>
 
 <script>
-import moment from 'moment';
+import TablesMixin from "@/mixins/TablesMixin";
 
 export default {
   name: "InstallationsList",
+  mixins: [TablesMixin],
   props: {
     installations: {
       type: Array,
@@ -56,6 +60,9 @@ export default {
           key: 'latest_status', sortable: false, formatter: (value) => {
             return this.getPrettyStatus(value)
           }
+        },
+        {
+          key: 'history'
         }
       ]
     }
@@ -66,17 +73,8 @@ export default {
     },
   },
   methods: {
-    getPrettyStatus(status) {
-      const prettyStatusMap = {
-        'installation_request': 'Installation requested',
-        'installation_in_progress': 'Installation in progress',
-        'installation_complete': 'Installation complete',
-        'installation_rejected': 'Installation rejected'
-      };
-      return prettyStatusMap[status];
-    },
-    getPrettyDate(date) {
-      return moment(date).format('YYYY-MM-DD HH:mm')
+    showHistory({item}) {
+      this.$emit('showHistory', item);
     }
   }
 }

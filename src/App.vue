@@ -17,26 +17,38 @@
     </div>
     <div class="row" v-show="!loading">
       <div class="col-xs-12 col-sm-10 offset-sm-1">
-        <installations-list :installations="installations" @sort="sort"/>
+        <installations-list :installations="installations" @sort="sort" @showHistory="fetchInstallationHistory"/>
       </div>
     </div>
+    <b-modal ref="history-modal" hide-footer title="History" size="lg">
+      <div class="d-block text-center">
+        <h3>Installation history</h3>
+        <p v-if="this.historyLoading">Loading...</p>
+        <installation-history :history="history" />
+      </div>
+      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close</b-button>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import InstallationsList from "@/components/InstallationsList";
 import {API_BASE} from "@/constants";
+import InstallationHistory from "@/components/InstallationHistory";
 
 export default {
   name: 'App',
   components: {
+    InstallationHistory,
     InstallationsList
   },
   data() {
     return {
       installations: [],
       sorting: '-date_modified',
-      loading: false
+      loading: false,
+      historyLoading: false,
+      history: []
     }
   },
   methods: {
@@ -49,10 +61,27 @@ export default {
             this.loading = false;
           })
     },
+    fetchInstallationHistory({id}) {
+      this.historyLoading = true;
+      this.showModal();
+      this.history = [];
+      fetch(`${API_BASE}/installations/${id}/history`)
+          .then(res => res.json())
+          .then(res => {
+            this.history = res;
+            this.historyLoading = false;
+          })
+    },
     sort(sortDefinition) {
       this.sortDefinition = sortDefinition;
       this.fetchInstallations();
-    }
+    },
+    showModal() {
+      this.$refs['history-modal'].show()
+    },
+    hideModal() {
+      this.$refs['history-modal'].hide()
+    },
   },
   created() {
     this.fetchInstallations();
