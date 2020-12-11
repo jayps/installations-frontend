@@ -7,12 +7,27 @@
                :sort-by.sync="sortBy"
                :sort-desc.sync="sortDesc"
                :no-local-sorting="true"
-               sort-icon-left></b-table>
+               sort-icon-left>
+        <template #cell(latest_status)="data">
+          {{ getPrettyStatus(data.value) }}
+        </template>
+        <template #cell(appointment_date)="data">
+          {{ getPrettyDate(data.value) }}
+        </template>
+        <template #cell(date_created)="data">
+          {{ getPrettyDate(data.value) }}
+        </template>
+        <template #cell(date_modified)="data">
+          {{ getPrettyDate(data.value) }}
+        </template>
+      </b-table>
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   name: "InstallationsList",
   props: {
@@ -22,11 +37,11 @@ export default {
     }
   },
   computed: {
-      sortDefinition() {
-        const sortDirection = this.sortDesc ? '-' : '';
+    sortDefinition() {
+      const sortDirection = this.sortDesc ? '-' : '';
 
-        return `${sortDirection}${this.sortBy}`;
-      }
+      return `${sortDirection}${this.sortBy}`;
+    }
   },
   data() {
     return {
@@ -44,6 +59,20 @@ export default {
   watch: {
     sortDefinition() {
       this.$emit('sort', this.sortDefinition);
+    },
+  },
+  methods: {
+    getPrettyStatus(status) {
+      const prettyStatusMap = {
+        'installation_request': 'Installation requested',
+        'installation_in_progress': 'Installation in progress',
+        'installation_complete': 'Installation Complete',
+        'installation_rejected': 'Installation Rejected'
+      };
+      return prettyStatusMap[status];
+    },
+    getPrettyDate(date) {
+      return moment(date).format('YYYY-MM-DD HH:mm')
     }
   }
 }

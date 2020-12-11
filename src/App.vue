@@ -1,10 +1,5 @@
 <template>
   <div id="app">
-    <div class="row" v-if="loading">
-      <div class="col-xs-12 col-sm-10 offset-sm-1">
-        Loading...
-      </div>
-    </div>
     <template>
       <div class="row">
         <div class="col-xs-12 col-sm-4 offset-sm-1">
@@ -15,6 +10,11 @@
         </div>
       </div>
     </template>
+    <div class="row" v-if="loading">
+      <div class="col-xs-12 col-sm-10 offset-sm-1">
+        Loading...
+      </div>
+    </div>
     <div class="row" v-show="!loading">
       <div class="col-xs-12 col-sm-10 offset-sm-1">
         <installations-list :installations="installations" @sort="sort"/>
