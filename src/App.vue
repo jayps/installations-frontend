@@ -1,17 +1,61 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="row" v-if="loading">
+      <div class="col-xs-12 col-sm-10 offset-sm-1">
+        Loading...
+      </div>
+    </div>
+    <template>
+      <div class="row">
+        <div class="col-xs-12 col-sm-4 offset-sm-1">
+          <h1>Installation manager</h1>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-right">
+          <b-button variant="outline-primary">New Installation</b-button>
+        </div>
+      </div>
+    </template>
+    <div class="row" v-show="!loading">
+      <div class="col-xs-12 col-sm-10 offset-sm-1">
+        <installations-list :installations="installations" @sort="sort"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import InstallationsList from "@/components/InstallationsList";
+import {API_BASE} from "@/constants";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    InstallationsList
+  },
+  data() {
+    return {
+      installations: [],
+      sorting: '-date_modified',
+      loading: false
+    }
+  },
+  methods: {
+    fetchInstallations() {
+      this.loading = true;
+      fetch(`${API_BASE}/installations/?ordering=${this.sortDefinition}`)
+          .then(res => res.json())
+          .then(res => {
+            this.installations = res;
+            this.loading = false;
+          })
+    },
+    sort(sortDefinition) {
+      this.sortDefinition = sortDefinition;
+      this.fetchInstallations();
+    }
+  },
+  created() {
+    this.fetchInstallations();
   }
 }
 </script>
@@ -19,10 +63,6 @@ export default {
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 48px;
 }
 </style>
