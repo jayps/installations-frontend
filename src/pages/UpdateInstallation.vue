@@ -3,54 +3,56 @@
     <div>
       <h1>Update Installation</h1>
     </div>
-    <div class="row" v-if="installation">
-      <div class="col">
-        <strong>Customer name: </strong>{{ installation.customer_name }}
+    <b-alert variant="error" :show="error">An error occurred, please try again.</b-alert>
+    <template v-if="installation">
+      <div class="row">
+        <div class="col">
+          <strong>Customer name: </strong>{{ installation.customer_name }}
+        </div>
+        <div class="col">
+          <strong>Appointment date: </strong>{{ getPrettyDate(installation.appointment_date) }}
+        </div>
       </div>
-      <div class="col">
-        <strong>Appointment date: </strong>{{ getPrettyDate(installation.appointment_date) }}
+      <div class="row">
+        <div class="col">
+          <strong>Created at: </strong>{{ getPrettyDate(installation.date_created) }}
+        </div>
+        <div class="col">
+          <strong>Last updated: </strong>{{ getPrettyDate(installation.date_modified) }}
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <strong>Created at: </strong>{{ getPrettyDate(installation.date_created) }}
+      <div class="row mb-3">
+        <div class="col">
+          <strong>Current status: </strong>{{ getPrettyStatus(installation.latest_status) }}
+        </div>
       </div>
-      <div class="col">
-        <strong>Last updated: </strong>{{ getPrettyDate(installation.date_modified) }}
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col">
-        <strong>Current status: </strong>{{ getPrettyStatus(installation.latest_status) }}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <b-alert variant="error" :show="error">An error occurred, please try again.</b-alert>
+      <div class="row">
+        <div class="col">
 
-        <b-form @submit="onSubmit" v-if="!loading" ref="status-form">
-          <b-form-group
-              id="status"
-              label="Status:"
-              label-for="status"
-          >
-            <b-form-select v-model="form.status" :options="statusOptions" required></b-form-select>
-          </b-form-group>
+          <b-form @submit="onSubmit" v-if="!loading" ref="status-form">
+            <b-form-group
+                id="status"
+                label="Status:"
+                label-for="status"
+            >
+              <b-form-select v-model="form.status" :options="statusOptions" required></b-form-select>
+            </b-form-group>
 
-          <b-form-group id="notes" label="Notes:" label-for="notes">
-            <b-form-textarea
-                id="notes"
-                v-model="form.notes"
-                placeholder="Enter notes here"
-                rows="3"
-                max-rows="6"
-                required
-            ></b-form-textarea>
-          </b-form-group>
-          <b-button type="submit" variant="primary" class="btn-block">Submit</b-button>
-        </b-form>
+            <b-form-group id="notes" label="Notes:" label-for="notes">
+              <b-form-textarea
+                  id="notes"
+                  v-model="form.notes"
+                  placeholder="Enter notes here"
+                  rows="3"
+                  max-rows="6"
+                  required
+              ></b-form-textarea>
+            </b-form-group>
+            <b-button type="submit" variant="primary" class="btn-block">Submit</b-button>
+          </b-form>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -88,14 +90,19 @@ export default {
       fetch(`${API_BASE}/installations/${id}/`)
           .then(res => {
             if (res.ok) {
-              res.json()
+              return res.json()
             } else {
               throw new Error()
             }
           })
           .then(res => {
+            console.log(res);
             this.installation = res;
             this.loading = false;
+          })
+          .catch((error) => {
+            this.error = true;
+            console.log(error);
           });
     },
     updateInstallation() {

@@ -78,7 +78,7 @@ export default {
         })
       }).then(res => {
         if (res.ok) {
-          res.json()
+          return res.json()
         } else {
           throw new Error()
         }
