@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col">
         <b-alert variant="danger mt-3" :show="error">An error occurred, please try again.</b-alert>
-        <b-alert variant="danger mt-3" :show="missingDateTime">Please select a date and time.</b-alert>
+        <b-alert variant="danger mt-3" :show="missingDateTime" data-test="alert-missing-date-time">Please select a date and time.</b-alert>
         <b-form @submit="onSubmit" v-if="!loading">
           <b-form-group
               id="customer_name"
@@ -82,17 +82,10 @@ export default {
         } else {
           throw new Error()
         }
-      }).then((res) => {
-        console.log(res);
+      }).then(() => {
         this.loading = false;
-        this.$bvToast.toast(`Installation created`, {
-          title: 'Success',
-          autoHideDelay: 5000,
-          variant: 'success'
-        });
         this.$router.push('/');
-      })
-      .catch(() => {
+      }).catch(() => {
         this.error = true;
         this.loading = false;
       })

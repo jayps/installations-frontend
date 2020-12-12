@@ -96,13 +96,11 @@ export default {
             }
           })
           .then(res => {
-            console.log(res);
             this.installation = res;
             this.loading = false;
           })
-          .catch((error) => {
+          .catch(() => {
             this.error = true;
-            console.log(error);
           });
     },
     updateInstallation() {
