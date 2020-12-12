@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       installations: [],
-      sorting: '-date_modified',
+      sortDefinition: '-date_modified',
       loading: false,
       historyLoading: false,
       history: []
