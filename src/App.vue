@@ -1,97 +1,34 @@
 <template>
   <div id="app">
-    <template>
-      <div class="row">
-        <div class="col-xs-12 col-sm-4 offset-sm-1">
-          <h1>Installation manager</h1>
-        </div>
-        <div class="col-xs-12 col-sm-6 text-right">
-          <b-button variant="outline-primary">New Installation</b-button>
-        </div>
-      </div>
-    </template>
-    <div class="row" v-if="loading">
-      <div class="col-xs-12 col-sm-10 offset-sm-1">
-        Loading...
-      </div>
+    <div>
+      <b-navbar toggleable="lg" type="dark" variant="info">
+        <b-navbar-brand href="#">Vuma</b-navbar-brand>
+
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+        <b-collapse id="nav-collapse" is-nav>
+          <b-navbar-nav>
+            <b-nav-item href="#/">Installations</b-nav-item>
+            <b-nav-item href="#/new-installation">New Installation</b-nav-item>
+          </b-navbar-nav>
+        </b-collapse>
+      </b-navbar>
     </div>
-    <div class="row" v-show="!loading">
-      <div class="col-xs-12 col-sm-10 offset-sm-1">
-        <installations-list :installations="installations" @sort="sort" @showHistory="fetchInstallationHistory"/>
-      </div>
+    <div class="container pt-5">
+      <router-view></router-view>
     </div>
-    <b-modal ref="history-modal" hide-footer title="History" size="lg">
-      <div class="d-block text-center">
-        <h3>Installation history</h3>
-        <p v-if="this.historyLoading">Loading...</p>
-        <installation-history :history="history" />
-      </div>
-      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close</b-button>
-    </b-modal>
   </div>
 </template>
 
 <script>
-import InstallationsList from "@/components/InstallationsList";
-import {API_BASE} from "@/constants";
-import InstallationHistory from "@/components/InstallationHistory";
 
 export default {
-  name: 'App',
-  components: {
-    InstallationHistory,
-    InstallationsList
-  },
-  data() {
-    return {
-      installations: [],
-      sorting: '-date_modified',
-      loading: false,
-      historyLoading: false,
-      history: []
-    }
-  },
-  methods: {
-    fetchInstallations() {
-      this.loading = true;
-      fetch(`${API_BASE}/installations/?ordering=${this.sortDefinition}`)
-          .then(res => res.json())
-          .then(res => {
-            this.installations = res;
-            this.loading = false;
-          })
-    },
-    fetchInstallationHistory({id}) {
-      this.historyLoading = true;
-      this.showModal();
-      this.history = [];
-      fetch(`${API_BASE}/installations/${id}/history`)
-          .then(res => res.json())
-          .then(res => {
-            this.history = res;
-            this.historyLoading = false;
-          })
-    },
-    sort(sortDefinition) {
-      this.sortDefinition = sortDefinition;
-      this.fetchInstallations();
-    },
-    showModal() {
-      this.$refs['history-modal'].show()
-    },
-    hideModal() {
-      this.$refs['history-modal'].hide()
-    },
-  },
-  created() {
-    this.fetchInstallations();
-  }
+  name: 'App'
 }
 </script>
 
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  margin-top: 48px;
 }
 </style>
