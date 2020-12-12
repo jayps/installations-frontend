@@ -17,6 +17,9 @@
     </div>
     <div class="row" v-show="!loading">
       <div class="col">
+        <div class="my-3">
+          Filter status: <b-form-select v-model="statusFilter" :options="statusOptions" size="sm" class="mt-3"></b-form-select>
+        </div>
         <installations-list :installations="installations" @sort="sort" @showHistory="fetchInstallationHistory"/>
       </div>
     </div>
@@ -49,13 +52,26 @@ export default {
       loading: false,
       historyLoading: false,
       history: [],
-      currentInstallation: null
+      currentInstallation: null,
+      statusFilter: null,
+      statusOptions: [
+        {value: null, text: 'No filter'},
+        {value: 'installation_request', text: 'Installation requested'},
+        {value: 'installation_in_progress', text: 'Installation in progress'},
+        {value: 'installation_complete', text: 'Installation Complete'},
+        {value: 'installation_rejected', text: 'Installation Rejected'}
+      ],
     }
   },
   methods: {
     fetchInstallations() {
       this.loading = true;
-      fetch(`${API_BASE}/installations/?ordering=${this.sortDefinition}`)
+      let url = `${API_BASE}/installations/?ordering=${this.sortDefinition}`;
+      if (this.statusFilter) {
+        url += `&latest_status=${this.statusFilter}`;
+      }
+
+      fetch(url)
           .then(res => res.json())
           .then(res => {
             this.installations = res;
@@ -86,6 +102,11 @@ export default {
   },
   created() {
     this.fetchInstallations();
+  },
+  watch: {
+    statusFilter() {
+      this.fetchInstallations();
+    }
   }
 }
 </script>
