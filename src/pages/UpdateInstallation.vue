@@ -26,6 +26,8 @@
     </div>
     <div class="row">
       <div class="col">
+        <b-alert variant="error" :show="error">An error occurred, please try again.</b-alert>
+
         <b-form @submit="onSubmit" v-if="!loading" ref="status-form">
           <b-form-group
               id="status"
@@ -49,7 +51,6 @@
         </b-form>
       </div>
     </div>
-    <b-alert variant="error" :show="error">An error occurred, please try again.</b-alert>
   </div>
 </template>
 
@@ -85,7 +86,13 @@ export default {
     fetchInstallation(id) {
       this.loading = true;
       fetch(`${API_BASE}/installations/${id}/`)
-          .then(res => res.json())
+          .then(res => {
+            if (res.ok) {
+              res.json()
+            } else {
+              throw new Error()
+            }
+          })
           .then(res => {
             this.installation = res;
             this.loading = false;

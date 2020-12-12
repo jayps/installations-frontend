@@ -5,6 +5,8 @@
     </div>
     <div class="row">
       <div class="col">
+        <b-alert variant="danger mt-3" :show="error">An error occurred, please try again.</b-alert>
+        <b-alert variant="danger mt-3" :show="missingDateTime">Please select a date and time.</b-alert>
         <b-form @submit="onSubmit" v-if="!loading">
           <b-form-group
               id="customer_name"
@@ -22,11 +24,11 @@
 
           <b-form-group id="appointment_date" label="Appointment date:" label-for="appointment_date">
             <b-form-datepicker id="appointment_date" v-model="form.appointmentDate" class="mb-2"
-                               :min="minInstallationDate" required="true"></b-form-datepicker>
+                               :min="minInstallationDate" required></b-form-datepicker>
           </b-form-group>
           <b-form-group id="appointment_time" label="Appointment time:" label-for="appointment_time">
             <b-form-timepicker id="appointment_time" v-model="form.appointmentTime" locale="en"
-                               required="true"></b-form-timepicker>
+                               required></b-form-timepicker>
           </b-form-group>
 
           <b-button type="submit" variant="primary" class="btn-block">Submit</b-button>
@@ -49,7 +51,9 @@ export default {
         appointmentTime: ''
       },
       minInstallationDate: new Date(),
-      loading: false
+      loading: false,
+      error: false,
+      missingDateTime: false
     }
   },
   methods: {
@@ -57,6 +61,11 @@ export default {
       this.createInstallation();
     },
     createInstallation() {
+      this.missingDateTime = !this.form.appointmentDate || !this.form.appointmentTime;
+      if (this.missingDateTime) {
+        return;
+      }
+
       this.loading = true;
       fetch(`${API_BASE}/create/installation/`, {
         method: 'POST',
@@ -67,7 +76,14 @@ export default {
           customer_name: this.form.customerName,
           appointment_date: `${this.form.appointmentDate}T${this.form.appointmentTime}`
         })
-      }).then(res => res.json()).then(() => {
+      }).then(res => {
+        if (res.ok) {
+          res.json()
+        } else {
+          throw new Error()
+        }
+      }).then((res) => {
+        console.log(res);
         this.loading = false;
         this.$bvToast.toast(`Installation created`, {
           title: 'Success',
@@ -75,6 +91,10 @@ export default {
           variant: 'success'
         });
         this.$router.push('/');
+      })
+      .catch(() => {
+        this.error = true;
+        this.loading = false;
       })
     }
   }
