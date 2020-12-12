@@ -48,7 +48,8 @@ export default {
       sortDefinition: '-date_modified',
       loading: false,
       historyLoading: false,
-      history: []
+      history: [],
+      currentInstallation: null
     }
   },
   methods: {

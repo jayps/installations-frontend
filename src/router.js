@@ -1,6 +1,7 @@
 import VueRouter from "vue-router";
 import InstallationList from "@/pages/InstallationList";
 import NewInstallation from "@/pages/NewInstallation";
+import UpdateInstallation from "@/pages/UpdateInstallation";
 
 const routes = [
     {
@@ -10,6 +11,10 @@ const routes = [
     {
         path: '/new-installation',
         component: NewInstallation
+    },
+    {
+        path: '/installations/:id',
+        component: UpdateInstallation
     }
 ]
 

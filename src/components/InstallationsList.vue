@@ -10,6 +10,7 @@
                sort-icon-left>
         <template #cell(history)="data">
           <b-button variant="outline-primary" @click="showHistory(data)">History</b-button>
+          <b-button variant="outline-primary" :href="`#/installations/${data.item.id}`">Update</b-button>
         </template>
       </b-table>
     </div>
