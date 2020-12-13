@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-sm-12">
-      <b-table striped hover
+      <b-table hover
                :items="installations"
                :fields="fields"
                :sort-by.sync="sortBy"

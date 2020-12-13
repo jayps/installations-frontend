@@ -28,7 +28,7 @@
       </div>
       <div class="row">
         <div class="col">
-
+          <p v-if="loading">Loading...</p>
           <b-form @submit="onSubmit" v-if="!loading" ref="status-form">
             <b-form-group
                 id="status"

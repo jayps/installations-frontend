@@ -26,7 +26,7 @@
     <b-modal ref="history-modal" hide-footer title="History" size="lg">
       <div class="d-block text-center">
         <h3>Installation history</h3>
-        <p v-if="this.historyLoading">Loading...</p>
+        <p v-if="historyLoading">Loading...</p>
         <installation-history :history="history" />
       </div>
       <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close</b-button>
@@ -71,10 +71,17 @@ export default {
         url += `&latest_status=${this.statusFilter}`;
       }
 
+      const rowVariants = {
+        'installation_request': 'light',
+        'installation_in_progress': 'warning',
+        'installation_complete': 'success',
+        'installation_rejected': 'danger'
+      }
+
       fetch(url)
           .then(res => res.json())
           .then(res => {
-            this.installations = res;
+            this.installations = res.map(item => ({...item, _rowVariant: rowVariants[item.latest_status]}));
             this.loading = false;
           })
     },
