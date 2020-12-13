@@ -4,7 +4,8 @@
       <h1>Update Installation</h1>
     </div>
     <b-alert variant="error" :show="error">An error occurred, please try again.</b-alert>
-    <template v-if="installation">
+    <loader v-if="loading" />
+    <template v-if="installation && !loading">
       <div class="row">
         <div class="col">
           <strong>Customer name: </strong>{{ installation.customer_name }}
@@ -28,7 +29,6 @@
       </div>
       <div class="row">
         <div class="col">
-          <p v-if="loading">Loading...</p>
           <b-form @submit="onSubmit" v-if="!loading" ref="status-form">
             <b-form-group
                 id="status"
@@ -59,9 +59,13 @@
 <script>
 import {API_BASE} from "@/constants";
 import TablesMixin from "@/mixins/TablesMixin";
+import Loader from "@/components/Loader";
 
 export default {
   name: "UpdateInstallation",
+  components: {
+    Loader
+  },
   mixins: [TablesMixin],
   data() {
     return {

@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-sm-12">
-      <b-table hover
+      <b-table hover responsive
                :items="installations"
                :fields="fields"
                :sort-by.sync="sortBy"

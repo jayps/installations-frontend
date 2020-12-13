@@ -12,7 +12,7 @@
     </template>
     <div class="row" v-if="loading">
       <div class="col">
-        Loading...
+        <loader />
       </div>
     </div>
     <div class="row" v-show="!loading">
@@ -26,7 +26,7 @@
     <b-modal ref="history-modal" hide-footer title="History" size="lg">
       <div class="d-block text-center">
         <h3>Installation history</h3>
-        <p v-if="historyLoading">Loading...</p>
+        <loader v-if="historyLoading">Loading...</loader>
         <installation-history :history="history" />
       </div>
       <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close</b-button>
@@ -39,11 +39,13 @@
 import InstallationsList from "@/components/InstallationsList";
 import {API_BASE} from "@/constants";
 import InstallationHistory from "@/components/InstallationHistory";
+import Loader from "@/components/Loader";
 export default {
   name: "InstallationList",
   components: {
     InstallationHistory,
-    InstallationsList
+    InstallationsList,
+    Loader
   },
   data() {
     return {
