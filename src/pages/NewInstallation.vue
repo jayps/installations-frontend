@@ -7,6 +7,7 @@
       <div class="col">
         <b-alert variant="danger mt-3" :show="error">An error occurred, please try again.</b-alert>
         <b-alert variant="danger mt-3" :show="missingDateTime" data-test="alert-missing-date-time">Please select a date and time.</b-alert>
+        <loader v-if="loading" />
         <b-form @submit="onSubmit" v-if="!loading">
           <b-form-group
               id="customer_name"
@@ -40,9 +41,11 @@
 
 <script>
 import {API_BASE} from "@/constants";
+import Loader from "@/components/Loader";
 
 export default {
   name: "NewInstallation",
+  components: {Loader},
   data() {
     return {
       form: {
